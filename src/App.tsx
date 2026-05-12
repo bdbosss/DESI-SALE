@@ -9,6 +9,7 @@ import './lib/i18n';
 import Navigation from './components/Navigation';
 import Dashboard from './components/Dashboard';
 import TransactionList from './components/TransactionList';
+import MonthlyReports from './components/MonthlyReports';
 import TransactionForm from './components/TransactionForm';
 import Settings from './components/Settings';
 import RecurringManager from './components/RecurringManager';
@@ -64,8 +65,8 @@ export default function App() {
   const renderView = () => {
     switch (currentView) {
       case 'dashboard': return <Dashboard />;
-      case 'transactions': 
-      case 'reports': return <TransactionList />;
+      case 'transactions': return <TransactionList />;
+      case 'reports': return <MonthlyReports />;
       case 'recurring': return <RecurringManager />;
       case 'settings': return <Settings />;
       case 'accountability': return <AccountabilitySheet />;
@@ -81,7 +82,7 @@ export default function App() {
         onAddClick={() => setShowAddForm(true)}
       />
       
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto pt-16 md:pt-0">
         <div className="max-w-7xl mx-auto p-6 md:p-10 lg:p-12">
           {renderView()}
         </div>

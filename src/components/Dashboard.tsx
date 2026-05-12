@@ -37,7 +37,7 @@ export default function Dashboard() {
     if (!transactions) return [];
     const days = eachDayOfInterval({
       start: startOfMonth(new Date()),
-      end: new Date()
+      end: endOfMonth(new Date())
     });
 
     return days.map(day => {

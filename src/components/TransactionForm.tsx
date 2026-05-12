@@ -17,9 +17,6 @@ export default function TransactionForm({ onClose, initialData }: TransactionFor
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const categories = useLiveQuery(() => db.categories.orderBy('order').toArray());
-  const filteredCategories = categories?.filter(cat => cat.type === formData.type) || [];
-
   const [formData, setFormData] = useState({
     amount: initialData?.amount || '',
     currency: (initialData?.currency as Currency) || 'USD',
@@ -28,6 +25,9 @@ export default function TransactionForm({ onClose, initialData }: TransactionFor
     note: initialData?.note || '',
     date: initialData?.date ? new Date(initialData.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
   });
+
+  const categories = useLiveQuery(() => db.categories.orderBy('order').toArray());
+  const filteredCategories = categories?.filter(cat => cat.type === formData.type) || [];
 
   // Set default category when type changes
   React.useEffect(() => {
@@ -38,11 +38,23 @@ export default function TransactionForm({ onClose, initialData }: TransactionFor
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const amountNum = Number(formData.amount);
+    
+    if (isNaN(amountNum) || amountNum <= 0) {
+      alert("Please enter a valid positive amount");
+      return;
+    }
+
+    if (!formData.categoryId) {
+      alert("Please select a category");
+      return;
+    }
+
     setLoading(true);
     try {
       await db.transactions.add({
         ...formData,
-        amount: Number(formData.amount),
+        amount: amountNum,
         date: new Date(formData.date),
         isRecurring: false,
       });
